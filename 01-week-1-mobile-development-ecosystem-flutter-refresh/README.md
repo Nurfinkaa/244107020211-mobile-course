@@ -2,7 +2,7 @@
 Buat aplikasi Profil Mahasiswa berdasarkan praktikum. Tambahkan NIM dan satu informasi tambahan menggunakan widget dasar. Push hasil ke repository portfolio sesuai struktur yang ditentukan. Sertakan screenshot dan penjelasan singkat atas satu kendala setup yang Anda temui.
 
 ## Kendala 
-Kutama yang saya temui adalah saat pertama kali menyambungkan HP fisik lewat USB, perangkat terdeteksi namun berstatus "not authorized". Solusinya adalah membuka HP dan mengizinkan (allow) dialog otorisasi USB debugging yang muncul di layar.
+Kendala utama yang saya temui adalah saat pertama kali menyambungkan HP fisik lewat USB, perangkat terdeteksi namun berstatus "not authorized". Solusinya adalah membuka HP dan mengizinkan (allow) dialog otorisasi USB debugging yang muncul di layar.
 
 # Refleksi
 
