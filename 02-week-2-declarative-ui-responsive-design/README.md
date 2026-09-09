@@ -130,7 +130,7 @@ Integritas kode diverifikasi menggunakan analisis statis dan automated test suit
 
 * **Analisis Kode (`flutter analyze`):**  
   Berjalan bersih tanpa peringatan (*0 issues found*).  
-  ![Bukti Flutter Analyze](screenshot/praktikum_8.jpg)
+  ![Bukti Flutter Analyze](screenshot/praktikum-8.jpg)
 
 * **Refactoring Challenge & Widget Testing (`flutter test`):**  
   Pengujian widget memastikan responsivitas beralih dengan benar antara mode 1 kolom dan 2 kolom.  
