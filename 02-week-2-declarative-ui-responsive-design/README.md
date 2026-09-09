@@ -2,8 +2,10 @@
 Kembangkan dashboard menjadi halaman Academic Overview dengan hasil seperi berikut ini 
 
 # layar sempit
+(screenshot/praktikum-6.JPG)
 
 # layar lebar 
+(screenshot/praktikum-5.JPG)
 
 ## AI Prompt Challenge
 Menggunakan AI hanya untuk membandingkan dua alternatif tata letak.
@@ -103,14 +105,31 @@ Breakpoint dipertahankan di 700px (bukan 600px) karena hasil pengujian di bebera
 Nilai breakpoint bersifat desain, bukan aturan baku Flutter — 700px dipilih berdasarkan pengamatan visual langsung (eksperimen mengubah breakpoint ke nilai lain), bukan sekadar mengikuti rekomendasi default.
 
 # Bukti verifikasi:
-- `flutter analyze` → tidak ada error/warning.
+- `flutter analyze` → tidak ada error/warning. `secreenshoot/praktikum_8.jpg`
 - `flutter test` → dua widget test responsif (`test/dashboard_responsive_test.dart`) lulus: satu kolom di layar sempit, dua kolom di layar lebar. 
 
 ## Refactoring challenge
 Setelah tugas utama berjalan, berikut adalah dokumentasi dari refactoring challange 
+(screenshot/praktikum-8(2).JPG)
 
 ## Refleksi
 1. Apa perbedaan cara berpikir imperative dan declarative saat membangun UI?
+Menurut saya, imperative lebih fokus pada langkah-langkah yang harus dilakukan untuk membuat atau mengubah tampilan. Sedangkan declarative lebih fokus pada tampilan seperti apa yang ingin dibuat. 
+
+Di Flutter, saya menggunakan cara declarative, yaitu menyusun tampilan menggunakan widget seperti Column, Row, GridView, dan InfoCard. Jadi saya cukup menentukan bentuk UI dan kondisinya, lalu Flutter yang mengatur tampilannya.
+
 2. apan Expanded membantu dan kapan penggunaannya justru menghasilkan layout error?
+Expanded berguna ketika kita ingin sebuah widget menggunakan ruang yang tersedia. Pada tugas ini, saya menggunakan Expanded agar GridView bisa mengisi sisa ruang di bawah ProfileCard.
+
+Tetapi kalau Expanded digunakan di tempat yang salah atau ruangnya tidak jelas, bisa menyebabkan error pada layout. Contohnya bisa terjadi overflow atau ukuran widget menjadi tidak sesuai. Jadi penggunaannya harus disesuaikan dengan struktur Row atau Column.
+
 3. Bagaimana breakpoint dan theme memengaruhi pengalaman pengguna?
+Breakpoint membuat tampilan aplikasi bisa menyesuaikan ukuran layar. Pada tugas ini, layar kecil menggunakan 1 kolom, sedangkan layar yang lebih lebar menggunakan 2 kolom. Jadi dashboard tetap nyaman dilihat di ukuran layar yang berbeda.
+
+Sedangkan theme digunakan untuk mengatur tampilan terang dan gelap. Dengan adanya Light Mode dan Dark Mode, pengguna bisa memilih tampilan yang lebih nyaman digunakan.
+
 4. Apa yang Anda verifikasi dari rekomendasi AI setelah tugas inti selesai
+melakukan testing. Saya memastikan InfoCard bisa digunakan kembali, Theme.of(context) berjalan dengan baik, dan breakpoint sudah menggunakan kWideBreakpoint.
+Saya juga menjalankan: flutter analyze
+untuk mengecek error dan warning, kemudian: flutter test
+Hasilnya: +4: All tests passed!
