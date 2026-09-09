@@ -11,12 +11,12 @@ Dashboard akademik dikembangkan menjadi halaman **Academic Overview** yang respo
 ### Tampilan Layar Sempit (Mobile / Portrait)
 Pada tampilan layar sempit (< 700px), kartu informasi ditata secara vertikal (1 kolom) agar seluruh informasi tetap terbaca dengan jelas tanpa terpotong.
 
-![Tampilan layar sempit](screenshot/praktikum-6.JPG)
+![Tampilan layar sempit](screenshot/praktikum-6.jpg)
 
 ### Tampilan Layar Lebar (Tablet / Desktop / Landscape)
 Pada tampilan layar lebar (≥ 700px), ruang horizontal dimanfaatkan secara optimal dengan menampilkan kartu informasi ke dalam 2 kolom.
 
-![Tampilan layar lebar](screenshot/praktikum-5.JPG)
+![Tampilan layar lebar](screenshot/praktikum-5.jpg)
 
 ---
 
@@ -29,6 +29,7 @@ Eksplorasi AI digunakan untuk membandingkan dua pendekatan arsitektur tata letak
 > *"Untuk 4-5 kartu info dengan breakpoint sederhana, bandingkan GridView.count vs LayoutBuilder + Column/Wrap manual untuk dashboard akademik Flutter."*
 
 * **Ringkasan Komparasi AI:**  
+    ![Hasil](screenshot/praktikum-7.jpg)
   * `GridView.count`: Lebih ringkas dan otomatis mengelola *spacing*, namun mengunci rasio dimensi setiap kartu melalui `childAspectRatio` (lebar : tinggi seragam).  
   * `LayoutBuilder` + `Wrap`: Fleksibel karena tinggi setiap kartu dapat menyesuaikan panjang kontennya (*intrinsic height*), namun memerlukan *boilerplate* kode yang lebih panjang.
 * **Verifikasi Mandiri:**  
@@ -133,7 +134,7 @@ Integritas kode diverifikasi menggunakan analisis statis dan automated test suit
 
 * **Refactoring Challenge & Widget Testing (`flutter test`):**  
   Pengujian widget memastikan responsivitas beralih dengan benar antara mode 1 kolom dan 2 kolom.  
-  ![Hasil Pengujian Test](screenshot/praktikum-8(2).JPG)
+  ![Hasil Pengujian Test](screenshot/praktikum-8(2).jpg)
 
 ```bash
 $ flutter analyze
