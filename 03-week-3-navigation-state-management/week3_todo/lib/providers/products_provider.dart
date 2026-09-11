@@ -8,6 +8,7 @@ class ProductsNotifier extends AsyncNotifier<List<String>> {
   @override
   Future<List<String>> build() async {
     await Future.delayed(const Duration(seconds: 2)); // simulasi network
+    throw Exception('Gagal terhubung ke server');
     return ['Keyboard', 'Mouse', 'Monitor'];
   }
 
@@ -18,6 +19,7 @@ class ProductsNotifier extends AsyncNotifier<List<String>> {
 
   Future<List<String>> _fetch() async {
     await Future.delayed(const Duration(seconds: 1));
+    throw Exception('Gagal terhubung ke server');
     return ['Keyboard', 'Mouse', 'Monitor', 'Headset'];
   }
 }
