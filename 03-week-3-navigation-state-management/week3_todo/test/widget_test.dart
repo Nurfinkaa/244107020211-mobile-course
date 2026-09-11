@@ -1,30 +1,34 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:week3_todo/main.dart';
+import 'package:week3_todo/pages/stats_page.dart';
+import 'package:week3_todo/providers/stats_provider.dart';
+
+class FakeStatsNotifier extends StatsNotifier {
+  @override
+  Future<List<StatEntry>> build() async {
+    return const [
+      StatEntry(label: 'Total Tugas', value: 20),
+      StatEntry(label: 'Tugas Selesai', value: 15),
+      StatEntry(label: 'Tugas Tertunda', value: 5),
+    ];
+  }
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('StatsPage menampilkan loading', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          statsProvider.overrideWith(FakeStatsNotifier.new),
+        ],
+        child: const MaterialApp(
+          home: StatsPage(),
+        ),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 }
