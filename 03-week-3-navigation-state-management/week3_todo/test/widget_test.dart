@@ -1,34 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:week3_todo/pages/stats_page.dart';
-import 'package:week3_todo/providers/stats_provider.dart';
-
-class FakeStatsNotifier extends StatsNotifier {
-  @override
-  Future<List<StatEntry>> build() async {
-    return const [
-      StatEntry(label: 'Total Tugas', value: 20),
-      StatEntry(label: 'Tugas Selesai', value: 15),
-      StatEntry(label: 'Tugas Tertunda', value: 5),
-    ];
-  }
-}
+import 'package:week3_todo/main.dart';
 
 void main() {
-  testWidgets('StatsPage menampilkan loading', (tester) async {
+  testWidgets('menambah tugas baru', (tester) async {
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          statsProvider.overrideWith(FakeStatsNotifier.new),
-        ],
-        child: const MaterialApp(
-          home: StatsPage(),
-        ),
+      const ProviderScope(
+        child: MyApp(),
       ),
     );
 
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.text('Belum ada tugas'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextField),
+      'Kerjakan PR minggu 3',
+    );
+
+    await tester.tap(find.text('Tambah'));
+    await tester.pump();
+
+    expect(
+      find.text('Kerjakan PR minggu 3').last,
+      findsOneWidget,
+    );
   });
 }
