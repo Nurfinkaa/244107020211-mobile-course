@@ -22,5 +22,13 @@ class Comment {
     body: json['body'] is String ? json['body'] as String : '',
   );
 }
+
+  Map<String, dynamic> toJson() => {
+          'postId': postId,
+          'id': id,
+          'name': name,
+          'email': email,
+          'body': body,
+        };
 }
 
