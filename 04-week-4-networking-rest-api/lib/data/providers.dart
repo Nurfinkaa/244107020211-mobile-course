@@ -4,6 +4,8 @@ import 'dart:async';
 import 'api_client.dart';
 import 'models/post.dart';
 import 'repositories/post_repository.dart';
+import 'models/comment.dart';
+import 'repositories/comment_repository.dart';
 
 final dioProvider = Provider<Dio>((ref) => createDio());
 
@@ -14,8 +16,6 @@ final postRepositoryProvider = Provider<PostRepository>(
 class PostListNotifier extends AsyncNotifier<List<Post>> {
   @override
   Future<List<Post>> build() async {
-    // Exception dari repository otomatis menjadi AsyncError.
-    // Inilah ekuivalen deklaratif dari AsyncValue.guard di versi lama.
     final repository = ref.watch(postRepositoryProvider);
     return repository.fetchPosts();
   }
@@ -34,14 +34,8 @@ class PostListNotifier extends AsyncNotifier<List<Post>> {
 final postListProvider =
     AsyncNotifierProvider<PostListNotifier, List<Post>>(
         PostListNotifier.new,
-        // Nonaktifkan retry otomatis Riverpod 3 agar error langsung
-        // final dan mudah diuji (tanpa ini, future provider di-test
-        // akan me-retry dan menggantung).
         retry: (retryCount, error) => null);
 
-/// Helper khusus testing (letakkan di providers.dart): membaca state
-/// pertama yang bukan loading lewat listener + completer, sehingga
-/// test tidak menunggu retry dan tidak melakukan HTTP sungguhan.
 Future<List<Post>> readPostsOnce(ProviderContainer container) {
   final completer = Completer<List<Post>>();
   final sub = container.listen<AsyncValue<List<Post>>>(
@@ -96,3 +90,14 @@ String friendlyErrorMessage(Object error) {
   }
   return 'Terjadi kesalahan tak terduga: $error';
 }
+
+final commentRepositoryProvider = Provider<CommentRepository>(
+  (ref) => CommentRepository(ref.watch(dioProvider)),
+);
+
+final commentsProvider = FutureProvider.family<List<Comment>, int>(
+  (ref, postId) async {
+    final repository = ref.watch(commentRepositoryProvider);
+    return repository.fetchComments(postId);
+  },
+);
