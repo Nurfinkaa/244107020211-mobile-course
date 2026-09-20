@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/paged_posts.dart';
-import '../data/providers.dart'; 
+import '../data/paged_posts.dart'; 
+import '../data/network_errors.dart';
+import 'post_tile.dart';
+import 'post_detail_page.dart';
 
 class PagedPostPage extends ConsumerStatefulWidget {
   const PagedPostPage({super.key});
@@ -25,10 +27,6 @@ class _PagedPostPageState
       }
     });
 
-    // Jaga-jaga: kalau item pertama sudah cukup memenuhi layar
-    // (jadi ScrollController belum punya ruang buat discroll sama
-    // sekali), loadNextPage() otomatis dipicu di sini, bukan nunggu
-    // event scroll yang nggak akan pernah terjadi.
     ref.listenManual(pagedPostsProvider, (previous, next) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!_controller.hasClients) return;
@@ -89,11 +87,17 @@ class _PagedPostPageState
             );
           }
           final post = state.items[index];
-          return ListTile(
-            leading: CircleAvatar(
-                child: Text(post.id.toString())),
-            title: Text(post.title,
-                maxLines: 1, overflow: TextOverflow.ellipsis),
+          return PostTile(
+            post: post,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => PostDetailPage(
+                  postId: post.id,
+                  initialPost: post,
+                ),
+              ),
+            ),
           );
         },
       ),
