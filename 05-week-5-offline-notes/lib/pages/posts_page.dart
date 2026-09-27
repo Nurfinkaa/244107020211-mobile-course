@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/local/post.dart';
 import '../data/repositories/post_repository.dart';
+import '../data/network_state.dart';
 
 final postRepositoryProvider = Provider((ref) => PostRepository());
 
@@ -22,11 +23,16 @@ class PostsNotifier extends AsyncNotifier<List<Post>> {
   }
 
   Future<void> _refreshInBackground(PostRepository repo) async {
+    final isForceOffline = ref.read(forceOfflineProvider);
+    if (isForceOffline) {
+      return; // anggap tidak ada koneksi, cache lama tetap dipakai
+    }
+
     try {
       await repo.fetchAndCachePosts();
-      ref.invalidateSelf(); // trigger build() lagi, ambil data baru dari cache
+      ref.invalidateSelf();
     } catch (_) {
-      // Gagal fetch (misal offline) -> biarkan, cache lama tetap dipakai
+      // gagal fetch beneran (misal WiFi mati) -> cache lama tetap dipakai
     }
   }
 }
@@ -37,9 +43,30 @@ class PostsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final postsAsync = ref.watch(postsProvider);
+    final isForceOffline = ref.watch(forceOfflineProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Posts (Cache-first)')),
+      appBar: AppBar(
+        title: const Text('Posts (Cache-first)'),
+        actions: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Force Offline', style: TextStyle(fontSize: 12)),
+              Switch(
+                value: isForceOffline,
+                onChanged: (value) {
+                  ref.read(forceOfflineProvider.notifier).state = value;
+                  if (!value) {
+                    ref.invalidate(postsProvider);
+                  }
+                },
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
+        ],
+      ),
       body: postsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(child: Text('Error: $err')),
