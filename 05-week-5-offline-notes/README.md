@@ -121,34 +121,32 @@ Path gambar relatif terhadap `README.md` ini — pastikan nama file di folder
 
 | Force-offline ON | Force-offline OFF |
 |---|---|
-| ![force offline on](screenshots/praktikum_force-offline-ON.png) | ![force offline off](screenshots/praktikum_force-offline-OFF.png) |
+| ![force offline on](screenshots/praktikum_force-offline-ON.jpg) | ![force offline off](screenshots/praktikum_force-offline-OFF.jpg) |
 
-![state kosong sync](screenshots/praktikum_belum-ada-tugas.png)
+![state kosong sync](screenshots/praktikum_belum-ada-tugas.jpg)
 *State kosong: "Belum ada catatan yang perlu di-sync" saat tidak ada data dirty.*
 
 **Tambah catatan (CRUD):**
 
 | Dialog tambah catatan | Catatan tersimpan |
 |---|---|
-| ![tambah catatan](screenshots/praktikum_tambah-catatan.png) | ![berhasil 1 catatan](screenshots/praktikum_berhasil-1-catatan.png) |
+| ![tambah catatan](screenshots/praktikum_tambah-catatan.jpg) | ![berhasil 1 catatan](screenshots/praktikum_berhasil-1-catatan.jpg) |
 
 **Badge dirty sebelum & sesudah sync:**
 
 | Sebelum sync (badge muncul) | Sesudah sync (badge hilang) |
 |---|---|
-| ![badge dirty muncul](screenshots/praktikum_badge-dirty-muncul.png) | ![badge hilang setelah sync](screenshots/RTE_list-badge-hilang-setelah-sync.png) |
+| ![badge dirty muncul](screenshots/praktikum_badge-dirty-muncul.jpg) | ![badge hilang setelah sync](screenshots/RTE_list-badge-hilang-setelah-sync.jpg) |
 
-![sync kosong](screenshots/praktikum_sync-kosong-tidak-ada-yang-di-sync.png)
+![sync kosong](screenshots/praktikum_sync-kosong-tidak-ada-yang-di-sync.jpg)
 *Sync dijalankan saat tidak ada catatan dirty — tidak ada yang diproses.*
 
 **Halaman detail catatan (GoRouter `/note/:id`):**
 
 | List — belum sync | Detail — belum sync | Detail — sudah sync |
 |---|---|---|
-| ![list belum sync](screenshots/RTE_list-catatan-belum-sync.png) | ![detail belum sync](screenshots/RTE_detail-catatan-belum-sync.png) | ![detail sudah sync](screenshots/RTE_detail-catatan-sudah-sync.png) |
+| ![list belum sync](screenshots/RTE_list-catatan-belum-sync.jpg) | ![detail belum sync](screenshots/RTE_detail-catatan-belum-sync.jpg) | ![detail sudah sync](screenshots/RTE_detail-catatan-sudah-sync.jpg) |
 
 **Hasil `flutter analyze` / `flutter test`:**
 
-![output terminal test](screenshots/flutter-test-output.png)
-*(Rename file screenshot terminal kamu jadi `flutter-test-output.png` di folder
-`screenshots/` agar cocok dengan link ini.)*
+![output terminal test](screenshots/Screenshot%202026-09-27%20184656.png)
