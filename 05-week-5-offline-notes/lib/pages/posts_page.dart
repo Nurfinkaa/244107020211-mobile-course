@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/local/post.dart';
 import '../data/repositories/post_repository.dart';
 import '../data/network_state.dart';
+import '../data/sync.dart';
 
 final postRepositoryProvider = Provider((ref) => PostRepository());
 
@@ -13,10 +14,8 @@ class PostsNotifier extends AsyncNotifier<List<Post>> {
   Future<List<Post>> build() async {
     final repo = ref.watch(postRepositoryProvider);
 
-    // 1. Segera kembalikan cache agar UI tidak blank saat offline
     final cached = await repo.readCachedPosts();
 
-    // 2. Di background: fetch dari API -> simpan ke cache -> refresh provider
     _refreshInBackground(repo);
 
     return cached;
@@ -24,15 +23,13 @@ class PostsNotifier extends AsyncNotifier<List<Post>> {
 
   Future<void> _refreshInBackground(PostRepository repo) async {
     final isForceOffline = ref.read(forceOfflineProvider);
-    if (isForceOffline) {
-      return; // anggap tidak ada koneksi, cache lama tetap dipakai
-    }
+    if (isForceOffline) return;
 
     try {
-      await repo.fetchAndCachePosts();
+      await refreshPostsInBackground(repo);
       ref.invalidateSelf();
     } catch (_) {
-      // gagal fetch beneran (misal WiFi mati) -> cache lama tetap dipakai
+      // gagal fetch -> cache lama tetap dipakai
     }
   }
 }

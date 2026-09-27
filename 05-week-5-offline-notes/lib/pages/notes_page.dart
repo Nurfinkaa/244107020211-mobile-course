@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/local/note.dart';
 import '../data/repositories/note_repository.dart';
 import 'posts_page.dart';
-import '../data/sync_service.dart';
+import '../data/sync.dart';
+import '../widgets/note_tile.dart';
+import 'package:go_router/go_router.dart';
 
 // 1. Provider untuk repository (satu-satunya pintu ke database)
 final noteRepositoryProvider = Provider((ref) => NoteRepository());
@@ -108,24 +110,18 @@ class NotesPage extends ConsumerWidget {
             itemCount: notes.length,
             itemBuilder: (context, index) {
               final note = notes[index];
-              return ListTile(
-                title: Text(note.title),
-                subtitle: Text(note.body),
-                trailing: Wrap(
-                  spacing: 8,
-                  children: [
-                    if (note.dirty)
-                      const Icon(Icons.sync_problem, color: Colors.orange, size: 18),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        if (note.id != null) {
-                          ref.read(notesProvider.notifier).deleteNote(note.id!);
-                        }
-                      },
-                    ),
-                  ],
-                ),
+              return NoteTile(
+                note: note,
+                onTap: () {
+                  if (note.id != null) {
+                    context.push('/note/${note.id}');
+                  }
+                },
+                onDelete: () {
+                  if (note.id != null) {
+                    ref.read(notesProvider.notifier).deleteNote(note.id!);
+                  }
+                },
               );
             },
           );

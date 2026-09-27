@@ -2,7 +2,6 @@ import 'package:sqflite/sqflite.dart';
 import '../local/db.dart';
 import '../local/note.dart';
 
-
 class NoteRepository {
   NoteRepository({Future<Database> Function()? openDb})
       : _openDb = openDb ?? openNotesDb;
@@ -13,6 +12,14 @@ class NoteRepository {
     final db = await _openDb();
     final rows = await db.query('notes', orderBy: 'updated_at DESC');
     return rows.map(Note.fromMap).toList();
+  }
+
+  // TAMBAHKAN INI (BARU)
+  Future<Note?> fetchNoteById(int id) async {
+    final db = await _openDb();
+    final rows = await db.query('notes', where: 'id = ?', whereArgs: [id]);
+    if (rows.isEmpty) return null;
+    return Note.fromMap(rows.first);
   }
 
   Future<Note> addNote({required String title, String body = ''}) async {
