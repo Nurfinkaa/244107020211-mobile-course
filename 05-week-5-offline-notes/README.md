@@ -147,6 +147,7 @@ Path gambar relatif terhadap `README.md` ini — pastikan nama file di folder
 |---|---|---|
 | ![list belum sync](screenshots/RTE_list-catatan-belum-sync.jpg) | ![detail belum sync](screenshots/RTE_detail-catatan-belum-sync.jpg) | ![detail sudah sync](screenshots/RTE_detail-catatan-sudah-sync.jpg) |
 
-**Hasil `flutter analyze` / `flutter test`:**
 
-![output terminal test](screenshots/Screenshot%202026-09-27%20184656.png)
+| `flutter analyze` | `flutter test` |
+|---|---|
+| ![flutter analyze](screenshots/flutter-analyze.png) | ![flutter test](screenshots/flutter-test.png)

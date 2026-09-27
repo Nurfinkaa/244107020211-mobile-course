@@ -99,12 +99,18 @@ baris "Ada, native (`.watch()` di setiap query)" pada tabel di atas berasal dari
 pengetahuan umum AI dan belum pernah dicoba langsung. Belum instal Drift, belum
 menjalankan `.watch()` secara nyata.
 
-**4. Apakah estimasi boilerplate AI masuk akal setelah dicoba instalasinya sendiri
-(`flutter pub add` + migrasi skema)?**
+**4. Apakah estimasi boilerplate AI masuk akal setelah kamu coba instalasinya
+sendiri (`flutter pub add` + migrasi skema)?**
 Untuk sqflite: sesuai — project ini memang butuh mapping manual (`toMap`/`fromMap`)
-seperti disebut di tabel, terlihat di `lib/data/local/note.dart`. Untuk Hive dan
-Drift: belum dicoba instalasi langsung di project ini, jadi baris boilerplate
-keduanya di tabel di atas belum divalidasi dengan pengalaman nyata — masih klaim AI.
+seperti disebut di tabel, terlihat di `lib/data/local/note.dart`. Untuk Hive: **sudah
+dicoba langsung** — eksperimen sementara di `main.dart` yang membuka box Hive,
+menambahkan data percobaan, dan mem-print isinya ke console. Bukti:
+`screenshots/Screenshot 2026-09-27 184656.png`, output `flutter run` menunjukkan
+`I/flutter: Isi box Hive: [{title: Test Hive, dirty: true}]` — box berhasil dibuat
+dan dibaca kembali tanpa masalah, mengonfirmasi klaim tabel bahwa Hive punya
+boilerplate lebih kecil dari Drift untuk kasus sederhana. Untuk Drift: belum
+dicoba instalasi langsung di project ini, jadi baris boilerplate Drift di tabel
+masih klaim AI, belum divalidasi dengan pengalaman nyata.
 
 **5. Keputusan final + alasan (boleh berbeda dari rekomendasi AI):**
 Diterima sesuai rekomendasi: SharedPreferences untuk preferensi, sqflite untuk
