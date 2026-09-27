@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:sqflite/sqflite.dart';
 import '../local/db.dart';
-import '../local/post.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../local/post.dart'; 
 
 
 class PostRepository {
