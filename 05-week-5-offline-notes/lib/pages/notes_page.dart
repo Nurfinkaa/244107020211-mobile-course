@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/local/note.dart';
 import '../data/repositories/note_repository.dart';
+import 'posts_page.dart';
+import '../data/sync_service.dart';
 
 // 1. Provider untuk repository (satu-satunya pintu ke database)
 final noteRepositoryProvider = Provider((ref) => NoteRepository());
@@ -24,6 +26,13 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
     await ref.read(noteRepositoryProvider).deleteNote(id);
     ref.invalidateSelf(); // refresh daftar setelah hapus
   }
+
+  Future<int> sync() async {
+  final repo = ref.read(noteRepositoryProvider);
+  final synced = await syncNotes(repo);
+  ref.invalidateSelf(); // refresh biar badge dirty ke-update
+  return synced;
+  }
 }
 
 class NotesPage extends ConsumerWidget {
@@ -40,6 +49,34 @@ class NotesPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Catatan Offline'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.sync),
+            tooltip: 'Sinkronkan catatan',
+            onPressed: () async {
+              final synced = await ref.read(notesProvider.notifier).sync();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      synced > 0
+                          ? '$synced catatan berhasil disinkronkan'
+                          : 'Tidak ada catatan yang perlu disinkronkan',
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.article_outlined),
+            tooltip: 'Lihat Posts (cache-first)',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PostsPage()),
+              );
+            },
+          ),
           // Badge jumlah catatan dirty
           if (dirtyCount > 0)
             Padding(
@@ -144,3 +181,4 @@ class NotesPage extends ConsumerWidget {
     );
   }
 }
+

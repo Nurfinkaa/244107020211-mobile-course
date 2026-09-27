@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import '../local/db.dart';
 import '../local/note.dart';
 
+
 class NoteRepository {
   NoteRepository({Future<Database> Function()? openDb})
       : _openDb = openDb ?? openNotesDb;
