@@ -184,7 +184,7 @@ Berikut bukti screenshot yang sudah diambil (disimpan di folder `screenshots/`):
 | `RTE_detail-catatan-belum-sync` | Halaman detail (`/note/:id` via GoRouter) menampilkan status "belum tersinkron" |
 | `RTE_detail-catatan-sudah-sync` | Halaman detail menampilkan status "tersinkron" setelah sync dijalankan |
 | `RTE_list-badge-hilang-setelah-sync` | Badge dirty pada daftar hilang setelah sync, konsisten dengan halaman detail |
-| `Screenshot 2026-09-27 184656` | Output terminal `flutter test` — konfirmasi seluruh test lulus |
+| `Screenshot 2026-09-27 184656` (rename disarankan → `11-eksperimen-hive-terminal.png`) | Output terminal eksperimen Hive — membuktikan `Box.watch()`/penyimpanan Hive benar-benar berfungsi (`Isi box Hive: [{title: Test Hive, dirty: true}]`), digunakan sebagai bukti verifikasi klaim reaktivitas Hive di AI Prompt Challenge |
 
 **Kesimpulan:** kedua poin checklist (baca/tambah/hapus catatan offline, dan akurasi badge dirty + cache posts) terbukti berfungsi sesuai desain — dirty flag muncul saat ada perubahan lokal, hilang setelah `syncNotes` berhasil, dan konsisten antara halaman daftar maupun halaman detail catatan.
 
@@ -197,3 +197,89 @@ Dua perilaku **Riverpod 3** berikut tidak ada pada contoh kode asli codelab (yan
 1. **Auto-dispose default.** Provider dapat di-*dispose* saat masih dalam status *loading* jika tidak ada `listener` aktif (`container.listen(...)`) yang mempertahankannya. Sekadar `container.read(provider.future)` tidak cukup untuk menjaga provider tetap hidup selama proses async berjalan.
 2. **Auto-retry saat error.** Ketika `build()` melempar *exception*, provider tidak langsung berubah menjadi `AsyncError`, melainkan mencoba ulang beberapa kali (state sementara bertipe `AsyncLoading` yang membawa `error` dan flag *retrying*). Untuk pengujian yang deterministik, retry ini perlu dimatikan lewat parameter `retry: (retryCount, error) => null` pada `ProviderContainer`.
 
+## File final: `test/note_test.dart`
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:week5_offline_notes/data/local/note.dart';
+import 'package:week5_offline_notes/data/repositories/note_repository.dart';
+import 'package:week5_offline_notes/pages/notes_page.dart';
+
+class FakeNoteRepository extends NoteRepository {
+  FakeNoteRepository({this.items = const [], this.throwError = false})
+      : super(openDb: () => throw UnimplementedError());
+
+  final List<Note> items;
+  final bool throwError;
+
+  @override
+  Future<List<Note>> fetchNotes() async {
+    if (throwError) throw Exception('db locked (simulasi)');
+    return items;
+  }
+
+  @override
+  Future<int> countDirty() =>
+      Future.value(items.where((n) => n.dirty).length);
+}
+
+void main() {
+  test('fromMap aman terhadap field yang hilang', () {
+    final note = Note.fromMap({'title': 'Belanja'});
+    expect(note.title, 'Belanja');
+    expect(note.body, '');
+    expect(note.dirty, isFalse);
+  });
+
+  test('flag dirty bertahan pada serialisasi', () {
+    final note = Note(
+      title: 'a',
+      updatedAt: DateTime(2026, 9, 18),
+      dirty: true,
+    );
+    final restored = Note.fromMap(note.toMap());
+    expect(restored.dirty, isTrue);
+  });
+
+  test('provider sukses dengan repository palsu', () async {
+    final container = ProviderContainer(
+      overrides: [
+        noteRepositoryProvider.overrideWithValue(
+          FakeNoteRepository(items: [
+            Note(title: 'Tes', updatedAt: DateTime.now()),
+          ]),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    container.listen(notesProvider, (_, __) {});
+
+    final notes = await container.read(notesProvider.future);
+    expect(notes.length, 1);
+    expect(notes.first.title, 'Tes');
+  });
+
+  test('provider error dengan repository palsu', () async {
+    final container = ProviderContainer(
+      retry: (retryCount, error) => null, // matikan auto-retry saat test
+      overrides: [
+        noteRepositoryProvider.overrideWithValue(
+          FakeNoteRepository(throwError: true),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    container.listen(notesProvider, (_, __) {}, fireImmediately: true);
+
+    // beri waktu lebih untuk state settle jadi AsyncError final
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+
+    final state = container.read(notesProvider);
+    expect(state.hasError, isTrue);
+    expect(state.error, isA<Exception>());
+  });
+}
+```

@@ -1,5 +1,23 @@
-
 **AI assistant yang digunakan:** Claude
+
+---
+
+## Prompt yang digunakan
+
+Prompt berikut diambil langsung dari bagian "AI Prompt Challenge" codelab Minggu 5,
+dijalankan verbatim tanpa modifikasi:
+
+```
+Aplikasi Flutter Offline Notes: CRUD catatan + preferensi tema.
+Bandingkan SharedPreferences, Hive, sqflite (SQLite), dan Drift
+untuk dua kebutuhan ini. Requirements:
+- Kriteria: kompleksitas query, kebutuhan relasi, reaktivitas (stream),
+  type-safety, ukuran boilerplate, dan kemudahan testing.
+- Beri rekomendasi final: mana untuk preferensi, mana untuk catatan,
+  beserta alasannya dalam 1 tabel.
+- Tunjukkan skema tabel/kotak untuk 1000+ catatan.
+Jelaskan trade-off setiap pilihan.
+```
 
 ---
 
@@ -57,6 +75,49 @@ kali UI rebuild.
   skema dengan baik), namun setup awal lebih berat karena membutuhkan code
   generation dengan `build_runner`, sehingga terasa "berat" untuk project kecil
   seperti tugas ini.
+
+---
+
+## AI Verification Checklist
+
+**1. Apakah AI menempatkan daftar catatan di SharedPreferences?**
+Tidak — ditolak. Daftar catatan disimpan di tabel `notes` (sqflite), lihat
+`lib/data/local/db.dart` dan `lib/data/repositories/note_repository.dart`.
+SharedPreferences hanya dipakai untuk `dark_mode` dan `last_opened_at`, sesuai
+batasan yang seharusnya untuk penyimpanan key-value primitif.
+
+**2. Apakah skema AI mendukung antrean sync (dirty flag/updated_at), atau cuma CRUD polos?**
+Mendukung. Skema di atas punya kolom `dirty` dan `updated_at`, dan keduanya
+benar-benar dipakai di kode: `countDirty()`/`markAllSynced()` di
+`NoteRepository` dan `syncNotes()` di `lib/data/sync.dart` untuk simulasi
+antrean sync, plus `fetchNotes()` yang sort berdasarkan `updated_at DESC`.
+
+**3. Apakah klaim "reaktif"/stream AI (terutama untuk Drift) didukung `.watch()`
+sungguhan, atau cuma asumsi?**
+Masih asumsi, belum diverifikasi. Project ini memakai sqflite, bukan Drift, jadi
+baris "Ada, native (`.watch()` di setiap query)" pada tabel di atas berasal dari
+pengetahuan umum AI dan belum pernah dicoba langsung. Belum instal Drift, belum
+menjalankan `.watch()` secara nyata.
+
+**4. Apakah estimasi boilerplate AI masuk akal setelah dicoba instalasinya sendiri
+(`flutter pub add` + migrasi skema)?**
+Untuk sqflite: sesuai — project ini memang butuh mapping manual (`toMap`/`fromMap`)
+seperti disebut di tabel, terlihat di `lib/data/local/note.dart`. Untuk Hive dan
+Drift: belum dicoba instalasi langsung di project ini, jadi baris boilerplate
+keduanya di tabel di atas belum divalidasi dengan pengalaman nyata — masih klaim AI.
+
+**5. Keputusan final + alasan (boleh berbeda dari rekomendasi AI):**
+Diterima sesuai rekomendasi: SharedPreferences untuk preferensi, sqflite untuk
+catatan. Alasan tambahan di luar tabel AI: SharedPreferences tidak cocok untuk
+koleksi karena harus di-serialize jadi satu string JSON besar yang rapuh untuk
+update parsial — bukan cuma soal performa, tapi juga risiko korupsi data kalau
+proses berhenti di tengah penulisan. **Bagian yang ditolak dari rekomendasi AI:**
+saran "Drift untuk skala lebih besar" di tabel Rekomendasi Final tidak diambil
+untuk project ini — boilerplate awal (build_runner, codegen) tidak sebanding
+manfaatnya untuk satu tabel sederhana; baru relevan kalau nanti benar-benar
+perlu relasi (kategori/tag) atau reaktivitas otomatis lintas banyak query.
+
+---
 
 ## Refleksi
 
