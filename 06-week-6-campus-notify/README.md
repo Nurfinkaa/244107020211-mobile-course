@@ -47,24 +47,32 @@ Bukti kondisi Terminated (aplikasi benar-benar ditutup sebelum notifikasi dikiri
 
 ## Galeri screenshot
 
-| File | Isi |
+### Setup dan login
+| Firebase Console (campaign percobaan) | Login dan Home |
 |---|---|
-| `screenshots/fcm-console-test.jpg` | Campaign percobaan dari Firebase Console |
-| `screenshots/login-home.jpg` | Halaman login dan Home setelah login |
-| `screenshots/foreground-banner.jpg` | Foreground: banner lokal |
-| `screenshots/foreground-tujuan.jpg` | Foreground: halaman Pengumuman 3 |
-| `screenshots/background-banner.jpg` | Background: banner sistem |
-| `screenshots/background-tujuan.jpg` | Background: halaman Pengumuman 3 |
-| `screenshots/terminated-banner.jpg` | Terminated: banner sistem |
-| `screenshots/terminated-tujuan.jpg` | Terminated: halaman Pengumuman 3 |
-| `screenshots/terminated-1-sebelum-ditutup.jpg` | Aplikasi terbuka sebelum ditutup |
-| `screenshots/terminated-2-sudah-ditutup.jpg` | Aplikasi sudah ditutup dari recent apps |
-| `screenshots/flutter-analyze-test.jpg` | Hasil `flutter analyze` dan `flutter test` |
+| <img src="screenshots/fcm-console-test.jpg" width="320" alt="Campaign percobaan dari Firebase Console"> | <img src="screenshots/login-home.jpg" width="240" alt="Halaman login dan Home setelah login"> |
 
-Catatan perangkat: Android, **[ISI: merek/tipe HP]**, diuji dengan data seluler.
-Wi-Fi tempat kost memblokir FCM (tidak ada log `onMessage`), dan uji Terminated
-dilakukan dengan menutup aplikasi lewat recent apps tanpa `flutter run` ulang.
-iOS tidak diuji.
+### Foreground
+| Banner lokal | Halaman Pengumuman 3 |
+|---|---|
+| <img src="screenshots/foreground-banner.jpg" width="240" alt="Foreground: banner lokal"> | <img src="screenshots/foreground-tujuan.jpg" width="240" alt="Foreground: halaman Pengumuman 3"> |
+
+### Background
+| Banner sistem | Halaman Pengumuman 3 |
+|---|---|
+| <img src="screenshots/background-banner.jpg" width="240" alt="Background: banner sistem"> | <img src="screenshots/background-tujuan.jpg" width="240" alt="Background: halaman Pengumuman 3"> |
+
+### Terminated
+| Sebelum ditutup | Sudah ditutup (recent apps) |
+|---|---|
+| <img src="screenshots/terminated-1-sebelum-ditutup.jpg" width="240" alt="Aplikasi terbuka sebelum ditutup"> | <img src="screenshots/terminated-2-sudah-ditutup.jpg" width="240" alt="Aplikasi sudah ditutup dari recent apps"> |
+
+| Banner sistem | Halaman Pengumuman 3 |
+|---|---|
+| <img src="screenshots/terminated-banner.jpg" width="240" alt="Terminated: banner sistem"> | <img src="screenshots/terminated-tujuan.jpg" width="240" alt="Terminated: halaman Pengumuman 3"> |
+
+### flutter analyze dan flutter test
+<img src="screenshots/flutter-analyze-test.jpg" width="480" alt="Hasil flutter analyze dan flutter test">
 
 ## Pengujian
 `flutter analyze` bersih dan `flutter test` lulus 11 test: parsing rute
