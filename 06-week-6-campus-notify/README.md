@@ -38,40 +38,24 @@ Payload yang sama: `notification` + `data.route = /pengumuman/3`.
 
 | State | Hasil | Bukti banner | Bukti halaman tujuan |
 |---|---|---|---|
-| Foreground | OK: banner lokal muncul (`_local.show`), klik masuk ke `/pengumuman/3` | `screenshots/foreground-banner.jpg` | `screenshots/foreground-tujuan.jpg` |
-| Background | OK: banner sistem muncul, klik masuk ke `/pengumuman/3` | `screenshots/background-banner.jpg` | `screenshots/background-tujuan.jpg` |
-| Terminated | OK: dibuka dari notifikasi, masuk ke `/pengumuman/3` via `getInitialMessage` | `screenshots/terminated-banner.jpg` | `screenshots/terminated-tujuan.jpg` |
+| Foreground | OK: banner lokal muncul (`_local.show`), klik masuk ke `/pengumuman/3` | <img src="screenshots/foreground-banner.jpg" width="200" alt="Foreground: banner lokal"> | <img src="screenshots/foreground-tujuan.jpg" width="200" alt="Foreground: halaman Pengumuman 3"> |
+| Background | OK: banner sistem muncul, klik masuk ke `/pengumuman/3` | <img src="screenshots/background-banner.jpg" width="200" alt="Background: banner sistem"> | <img src="screenshots/background-tujuan.jpg" width="200" alt="Background: halaman Pengumuman 3"> |
+| Terminated | OK: dibuka dari notifikasi, masuk ke `/pengumuman/3` via `getInitialMessage` | <img src="screenshots/terminated-banner.jpg" width="200" alt="Terminated: banner sistem"> | <img src="screenshots/terminated-tujuan.jpg" width="200" alt="Terminated: halaman Pengumuman 3"> |
 
 Bukti kondisi Terminated (aplikasi benar-benar ditutup sebelum notifikasi dikirim):
-`screenshots/terminated-1-sebelum-ditutup.jpg` dan `screenshots/terminated-2-sudah-ditutup.jpg`.
 
-## Galeri screenshot
+| Sebelum ditutup | Sudah ditutup (recent apps) |
+|---|---|
+| <img src="screenshots/terminated-1-sebelum-ditutup.jpg" width="200" alt="Aplikasi terbuka sebelum ditutup"> | <img src="screenshots/terminated-2-sudah-ditutup.jpg" width="200" alt="Aplikasi sudah ditutup dari recent apps"> |
 
-### Setup dan login
+## Screenshot pendukung
+
 | Firebase Console (campaign percobaan) | Login dan Home |
 |---|---|
 | <img src="screenshots/fcm-console-test.jpg" width="320" alt="Campaign percobaan dari Firebase Console"> | <img src="screenshots/login-home.jpg" width="240" alt="Halaman login dan Home setelah login"> |
 
-### Foreground
-| Banner lokal | Halaman Pengumuman 3 |
-|---|---|
-| <img src="screenshots/foreground-banner.jpg" width="240" alt="Foreground: banner lokal"> | <img src="screenshots/foreground-tujuan.jpg" width="240" alt="Foreground: halaman Pengumuman 3"> |
+Hasil `flutter analyze` dan `flutter test`:
 
-### Background
-| Banner sistem | Halaman Pengumuman 3 |
-|---|---|
-| <img src="screenshots/background-banner.jpg" width="240" alt="Background: banner sistem"> | <img src="screenshots/background-tujuan.jpg" width="240" alt="Background: halaman Pengumuman 3"> |
-
-### Terminated
-| Sebelum ditutup | Sudah ditutup (recent apps) |
-|---|---|
-| <img src="screenshots/terminated-1-sebelum-ditutup.jpg" width="240" alt="Aplikasi terbuka sebelum ditutup"> | <img src="screenshots/terminated-2-sudah-ditutup.jpg" width="240" alt="Aplikasi sudah ditutup dari recent apps"> |
-
-| Banner sistem | Halaman Pengumuman 3 |
-|---|---|
-| <img src="screenshots/terminated-banner.jpg" width="240" alt="Terminated: banner sistem"> | <img src="screenshots/terminated-tujuan.jpg" width="240" alt="Terminated: halaman Pengumuman 3"> |
-
-### flutter analyze dan flutter test
 <img src="screenshots/flutter-analyze-test.jpg" width="480" alt="Hasil flutter analyze dan flutter test">
 
 ## Pengujian
