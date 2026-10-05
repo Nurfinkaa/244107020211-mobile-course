@@ -64,9 +64,10 @@ Hasil `flutter analyze` dan `flutter test`:
 serta logika sesi token dan refresh. Bukti: `screenshots/flutter-analyze-test.jpg`.
 
 ## Dokumentasi
-- `docs/03-verifikasi-dan-perbaikan.md`: prompt, draf AI, checklist verifikasi, perbaikan manual, keputusan final
-- `docs/04-refleksi.md`: jawaban pertanyaan refleksi
-- Branch `coba-draf-ai` (commit `3594def`): eksperimen memakai draf AI apa adanya
+
+- [`docs/03-verifikasi-dan-perbaikan.md`](docs/03-verifikasi-dan-perbaikan.md): prompt, draf AI, checklist verifikasi, perbaikan manual, keputusan final
+- [`docs/04-refleksi.md`](docs/04-refleksi.md): jawaban pertanyaan refleksi
+- [Branch `coba-draf-ai`](https://github.com/USERNAME/REPO/tree/coba-draf-ai) ([commit `3594def`](https://github.com/USERNAME/REPO/commit/3594def)): eksperimen memakai draf AI apa adanya
 
 ## Hasil yang dicapai
 Sudah jalan: login mock dengan guard route, penyimpanan token aman, refresh
