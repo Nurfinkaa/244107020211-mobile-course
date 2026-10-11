@@ -1,38 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/local/post.dart';
-import '../data/repositories/post_repository.dart';
-import '../data/network_state.dart';
-import '../data/sync.dart';
 
-final postRepositoryProvider = Provider((ref) => PostRepository());
-
-final postsProvider = AsyncNotifierProvider<PostsNotifier, List<Post>>(PostsNotifier.new);
-
-class PostsNotifier extends AsyncNotifier<List<Post>> {
-  @override
-  Future<List<Post>> build() async {
-    final repo = ref.watch(postRepositoryProvider);
-
-    final cached = await repo.readCachedPosts();
-
-    _refreshInBackground(repo);
-
-    return cached;
-  }
-
-  Future<void> _refreshInBackground(PostRepository repo) async {
-    final isForceOffline = ref.read(forceOfflineProvider);
-    if (isForceOffline) return;
-
-    try {
-      await refreshPostsInBackground(repo);
-      ref.invalidateSelf();
-    } catch (_) {
-      // gagal fetch -> cache lama tetap dipakai
-    }
-  }
-}
+import '../providers/posts_providers.dart';
 
 class PostsPage extends ConsumerWidget {
   const PostsPage({super.key});
@@ -53,7 +22,7 @@ class PostsPage extends ConsumerWidget {
               Switch(
                 value: isForceOffline,
                 onChanged: (value) {
-                  ref.read(forceOfflineProvider.notifier).state = value;
+                  ref.read(forceOfflineProvider.notifier).set(value);
                   if (!value) {
                     ref.invalidate(postsProvider);
                   }
@@ -69,7 +38,8 @@ class PostsPage extends ConsumerWidget {
         error: (err, stack) => Center(child: Text('Error: $err')),
         data: (posts) {
           if (posts.isEmpty) {
-            return const Center(child: Text('Belum ada data (coba online dulu 1x)'));
+            return const Center(
+                child: Text('Belum ada data (coba online dulu 1x)'));
           }
           return ListView.builder(
             itemCount: posts.length,
@@ -77,7 +47,8 @@ class PostsPage extends ConsumerWidget {
               final post = posts[index];
               return ListTile(
                 title: Text(post.title),
-                subtitle: Text(post.body, maxLines: 2, overflow: TextOverflow.ellipsis),
+                subtitle:
+                    Text(post.body, maxLines: 2, overflow: TextOverflow.ellipsis),
               );
             },
           );
