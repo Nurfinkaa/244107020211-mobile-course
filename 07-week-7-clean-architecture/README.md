@@ -84,14 +84,14 @@ flutter test
 **1. Presentation steril dari data mentah** — nol hasil:
 
 ```
-$ rg -n "Dio\(|openDatabase|getDatabasesPath|FlutterSecureStorage|SharedPreferences\.getInstance|jsonDecode" lib/features/notes/presentation lib/features/posts/presentation
+$ rg -n "Dio\(|openDatabase|getDatabasesPath|FlutterSecureStorage|SharedPreferences\.getInstance|jsonDecode" lib/features --glob "**/presentation/**"
 exit=1 (nol hasil)
 ```
 
 **2. Domain + core steril dari framework** — nol hasil:
 
 ```
-$ rg -n "import 'package:flutter|import 'package:dio|import 'package:sqflite|import 'package:firebase" lib/features/notes/domain lib/features/posts/domain lib/core
+$ rg -n "import 'package:flutter|import 'package:dio|import 'package:sqflite|import 'package:firebase" lib/features lib/core --glob "**/domain/**" --glob "lib/core/**"
 exit=1 (nol hasil)
 ```
 
