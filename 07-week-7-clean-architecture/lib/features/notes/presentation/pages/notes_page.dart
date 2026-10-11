@@ -1,41 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/local/note.dart';
-import '../data/repositories/note_repository.dart';
-import 'posts_page.dart';
-import '../data/sync.dart';
-import '../widgets/note_tile.dart';
 import 'package:go_router/go_router.dart';
 
-// 1. Provider untuk repository (satu-satunya pintu ke database)
-final noteRepositoryProvider = Provider((ref) => NoteRepository());
-
-// 2. Provider untuk daftar catatan, expose sebagai AsyncValue
-final notesProvider =
-    AsyncNotifierProvider<NotesNotifier, List<Note>>(NotesNotifier.new);
-
-class NotesNotifier extends AsyncNotifier<List<Note>> {
-  @override
-  Future<List<Note>> build() =>
-      ref.watch(noteRepositoryProvider).fetchNotes();
-
-  Future<void> addNote(String title, String body) async {
-    await ref.read(noteRepositoryProvider).addNote(title: title, body: body);
-    ref.invalidateSelf(); // refresh daftar setelah tambah
-  }
-
-  Future<void> deleteNote(int id) async {
-    await ref.read(noteRepositoryProvider).deleteNote(id);
-    ref.invalidateSelf(); // refresh daftar setelah hapus
-  }
-
-  Future<int> sync() async {
-  final repo = ref.read(noteRepositoryProvider);
-  final synced = await syncNotes(repo);
-  ref.invalidateSelf(); // refresh biar badge dirty ke-update
-  return synced;
-  }
-}
+import '../../../../core/format.dart';
+import '../providers/notes_providers.dart';
+import '../widgets/note_tile.dart';
 
 class NotesPage extends ConsumerWidget {
   const NotesPage({super.key});
@@ -44,7 +13,6 @@ class NotesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notesAsync = ref.watch(notesProvider);
 
-    // Hitung berapa catatan yang belum tersinkron (dirty)
     final dirtyCount = notesAsync.value?.where((n) => n.dirty).length ?? 0;
 
     return Scaffold(
@@ -55,43 +23,47 @@ class NotesPage extends ConsumerWidget {
             icon: const Icon(Icons.sync),
             tooltip: 'Sinkronkan catatan',
             onPressed: () async {
-              final synced = await ref.read(notesProvider.notifier).sync();
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      synced > 0
-                          ? '$synced catatan berhasil disinkronkan'
-                          : 'Tidak ada catatan yang perlu disinkronkan',
+              try {
+                final synced =
+                    await ref.read(notesProvider.notifier).sync();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        synced > 0
+                            ? '$synced catatan berhasil disinkronkan'
+                            : 'Tidak ada catatan yang perlu disinkronkan',
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('$e')),
+                  );
+                }
               }
             },
           ),
           IconButton(
             icon: const Icon(Icons.article_outlined),
             tooltip: 'Lihat Posts (cache-first)',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const PostsPage()),
-              );
-            },
+            onPressed: () => context.push('/posts'),
           ),
-          // Badge jumlah catatan dirty
           if (dirtyCount > 0)
             Padding(
               padding: const EdgeInsets.only(right: 16),
               child: Center(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.orange,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '$dirtyCount belum sync',
+                    dirtyBadgeLabel(dirtyCount),
                     style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ),
@@ -117,9 +89,18 @@ class NotesPage extends ConsumerWidget {
                     context.push('/note/${note.id}');
                   }
                 },
-                onDelete: () {
-                  if (note.id != null) {
-                    ref.read(notesProvider.notifier).deleteNote(note.id!);
+                onDelete: () async {
+                  if (note.id == null) return;
+                  try {
+                    await ref
+                        .read(notesProvider.notifier)
+                        .deleteNote(note.id!);
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('$e')),
+                      );
+                    }
                   }
                 },
               );
@@ -161,13 +142,20 @@ class NotesPage extends ConsumerWidget {
             child: const Text('Batal'),
           ),
           TextButton(
-            onPressed: () {
-              if (titleController.text.trim().isNotEmpty) {
-                ref.read(notesProvider.notifier).addNote(
-                      titleController.text.trim(),
-                      bodyController.text.trim(),
-                    );
+            onPressed: () async {
+              final title = titleController.text.trim();
+              final body = bodyController.text.trim();
+              if (title.isNotEmpty) {
                 Navigator.pop(context);
+                try {
+                  await ref.read(notesProvider.notifier).addNote(title, body);
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('$e')),
+                    );
+                  }
+                }
               }
             },
             child: const Text('Simpan'),
@@ -177,4 +165,3 @@ class NotesPage extends ConsumerWidget {
     );
   }
 }
-
